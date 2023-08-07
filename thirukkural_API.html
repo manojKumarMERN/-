@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Tamil&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&family=Tiro+Tamil&display=swap" rel="stylesheet">
+    <title>திருக்குறள்</title>
+</head>
+<style>
+    body {
+        background-color: #720e9e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        margin-bottom: 300px;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #main {
+        background-color: #D8BFD8;
+        padding: 30px;
+        border-radius: 30px 0 1px 0;
+        width: 400px;
+        height: 200px;
+    }
+
+    input {
+        background-color: transparent;
+        outline: none;
+        border: none;
+        border-bottom: 2px solid;
+        width: 30px;
+        margin-left: 20px;
+        text-align: center;
+    }
+
+    #tamilContainer {
+        padding: 30px;
+        border-radius: 30px 0 1px 0;
+        width: 450px;
+        /* background-color: #DDA0DD; */
+        color: white;
+        margin-top: 50px;
+        margin-left: -50px;
+    }
+
+    button {
+        background-color: blueviolet;
+        border-radius: 5px;
+        padding: 5px;
+        margin-left: 10px;
+
+
+    }
+</style>
+
+<body>
+    <div id="main">
+
+        <div id="mainConatiner">
+
+            <h1 style="font-family: 'Tiro Tamil', serif; text-align: center;">
+                திருக்குறள்
+            </h1>
+            <h1 style="font-family: 'Roboto Slab', serif;text-align: center;">
+                THIRUKURAL
+            </h1>
+            <div style="display: flex;margin-bottom: 20px;align-items: center;justify-content: center;">
+                <label for="kuralNum"><b style="font-family: 'Tiro Tamil', serif;"> திருக்குறள் எண் </b> <br>
+                    THIRUKURAL NUMBER
+                </label>
+                <div>
+                    <input type="text" id="kuralNum">
+                    <button type="button" id="search">search</button>
+                </div>
+            </div>
+        </div>
+        <div id="tamilContainer">
+
+            <h2 id="tamilHeading" style="font-family: 'Tiro Tamil', serif;"></h2>
+            <div style="display: flex;">
+                <p id="kuralYen" style="font-size: medium;font-family: 'Tiro Tamil', serif;margin-right: 10px; margin-left: 22px;
+                    margin-top: 23px"></p>
+            </div>
+
+            <h3 id="tamilSection" style="font-family: 'Tiro Tamil', serif;"></h3>
+            <p id="explainT" style="font-family: 'Tiro Tamil', serif;"></p>
+
+            <div id="kural_div" style="font-weight: bolder; font-style: italic;">
+                <p id="line1" style="font-family: 'Tiro Tamil', serif;"></p>
+                <p id="line2" style="font-family: 'Tiro Tamil', serif;"></p>
+
+            </div>
+
+            <div id="englishContainer" style="font-family: 'Roboto Slab', serif;">
+                <h2 id="engHeading"></h2>
+                <h3 id="engSection"></h3>
+                <p id="explainE"></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+    <script>
+        var value = document.querySelector("#kuralNum");
+        var button = document.querySelector("#search");
+
+
+        async function getApi(num) {
+            try {
+                var response = await fetch(`https://api-thirukkural.vercel.app/api?num=${num}`);
+                var data = await response.json();
+                console.log(data)
+                var chapterNameT = data.chap_tam;
+                var chapterNameE = data.chap_eng;
+                var sectionT = data.sect_tam;
+                var sectionE = data.sect_eng;
+                var explainT = data.tam_exp;
+                var explainE = data.eng_exp;
+                console.log(chapterNameT);
+                document.getElementById("tamilHeading").innerText = chapterNameT;
+                document.getElementById("engHeading").innerText = chapterNameE;
+                document.getElementById("tamilSection").innerText = sectionT;
+                document.getElementById("engSection").innerText = sectionE;
+                document.getElementById("explainT").innerText = explainT;
+                document.getElementById("explainE").innerText = explainE
+
+                //thirukural 
+                var line1 = data.line1;
+                var line2 = data.line2;
+                document.getElementById("line1").innerText = line1;
+                document.getElementById("line2").innerText = line2;
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+
+        function search() {
+            var kuralNum = Number(value.value);
+            document.getElementById("kuralYen").innerText = `குறள் எண்:- ${kuralNum}`
+
+            if (kuralNum >= 1331) {
+                console.log("bigger number")
+                document.getElementById("kuralYen").innerText = "குறள் எண்ணில் தவறு உள்ளது."
+            }
+
+            else if (kuralNum <= 1330) {
+                console.log(kuralNum);
+                console.log(typeof kuralNum);
+                console.log("clicked");
+                getApi(kuralNum);
+            }
+
+            else {
+                console.log("valid number")
+            }
+        }
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            search()
+        });
+
+    </script>
+</body>
+
+</html>
